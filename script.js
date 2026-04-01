@@ -104,7 +104,7 @@ function showLoading() {
 function showNotFound() {
     movieContainer.innerHTML = `
     <div class="not-found">
-      <div class="movie-icon">🎬</div>
+      <div class="movie-icon">🙁</div>
       <p>Movie not found</p>
       <p style="font-size: 0.75rem;">Try searching for: Avatar, Inception, Interstellar</p>
     </div>
