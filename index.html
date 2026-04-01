@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="resources/favicon.ico" type="image/x-icon" sizes="96x96" />
+    <title>Movie Search App | devChallenges.io</title>
+
+    <!-- Google Fonts - Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Hero Background Image -->
+    <div class="hero-bg"></div>
+
+    <div class="container">
+        <!-- Header / Hero -->
+        <div class="hero">
+            <div class="logo">
+                <picture>
+                    <source srcset="resources/OMDb-logo@2x.png" media="(min-width: 768px)" />
+                    <img src="resources/OMDb-logo.png" alt="OMDb Logo" />
+                </picture>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <div class="search-icon">
+                        <img src="resources/search_alt.svg" alt="Search" />
+                    </div>
+                    <input type="text" id="searchInput" placeholder="Search movie" autocomplete="off" />
+                </div>
+                <button id="searchButton"></button>
+            </div>
+        </div>
+
+        <!-- Movie Card Container -->
+        <div id="movieContainer"></div>
+
+        <!-- Author Info -->
+        <div class="author-info">
+            Coded by <a href="#">stfu</a> | Challenge by
+            <a href="https://www.devchallenges.io?ref=challenge" target="_blank">devChallenges.io</a>.
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
