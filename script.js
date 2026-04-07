@@ -1,129 +1,120 @@
 /* ============================================
    Movie Search App - JavaScript
-   OMDB API Integration
+   OMDB API Integration + Genre Filter + Popular Movies
    ============================================ */
 
 // ============================================
 // KONFIGURASI
 // ============================================
 
-// Masukkan API Key OMDB Anda di sini
-// Dapatkan di: http://www.omdbapi.com/apikey.aspx
-const OMDB_API_KEY = null; // Ganti dengan API Key Anda: "your_api_key_here"
-
-// Mock data untuk demo jika tidak menggunakan API
-const MOCK_MOVIES = {
-    "avatar": {
-        Title: "Avatar: The Way of Water",
-        Year: "2022",
-        Rated: "PG-13",
-        Released: "16 Dec 2022",
-        Runtime: "192 min",
-        Genre: "Action, Adventure, Fantasy",
-        Director: "James Cameron",
-        Writer: "James Cameron, Rick Jaffa, Amanda Silver",
-        Actors: "Sam Worthington, Zoe Saldana, Sigourney Weaver",
-        Plot: "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race to protect their home.",
-        Language: "English",
-        Country: "United States",
-        Awards: "Nominated for 4 Oscars",
-        Poster: "https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_SX300.jpg",
-        imdbRating: "7.6",
-        imdbVotes: "444,491"
-    },
-    "inception": {
-        Title: "Inception",
-        Year: "2010",
-        Genre: "Action, Adventure, Sci-Fi",
-        Director: "Christopher Nolan",
-        Writer: "Christopher Nolan",
-        Actors: "Leonardo DiCaprio, Joseph Gordon-Levitt, Elliot Page",
-        Plot: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O., but his tragic past may doom the project and his team to disaster.",
-        Poster: "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-        imdbRating: "8.8",
-        imdbVotes: "2,500,000"
-    },
-    "interstellar": {
-        Title: "Interstellar",
-        Year: "2014",
-        Genre: "Adventure, Drama, Sci-Fi",
-        Director: "Christopher Nolan",
-        Writer: "Jonathan Nolan, Christopher Nolan",
-        Actors: "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
-        Plot: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        Poster: "https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg",
-        imdbRating: "8.7",
-        imdbVotes: "2,100,000"
-    },
-    "the dark knight": {
-        Title: "The Dark Knight",
-        Year: "2008",
-        Genre: "Action, Crime, Drama",
-        Director: "Christopher Nolan",
-        Writer: "Jonathan Nolan, Christopher Nolan",
-        Actors: "Christian Bale, Heath Ledger, Aaron Eckhart",
-        Plot: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
-        Poster: "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg",
-        imdbRating: "10",
-        imdbVotes: "2,800,000,000"
-    }
-};
-
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
 const searchButton = document.getElementById('searchButton');
 const movieContainer = document.getElementById('movieContainer');
+const popularMoviesGrid = document.getElementById('popularMoviesGrid');
+const genreFilters = document.getElementById('genreFilters');
+
+// State
+let currentGenre = 'all';
 
 // ============================================
-// HELPER FUNCTIONS
+// DATA POPULAR MOVES (Dengan IMDb ID untuk ambil poster)
 // ============================================
 
-/**
- * Format votes number
- */
+const popularMoviesByGenre = {
+    action: [
+        { title: "The Dark Knight", year: "2008", genre: "Action", imdbID: "tt0468569" },
+        { title: "Mad Max: Fury Road", year: "2015", genre: "Action", imdbID: "tt1392190" },
+        { title: "John Wick", year: "2014", genre: "Action", imdbID: "tt2911666" },
+        { title: "Gladiator", year: "2000", genre: "Action", imdbID: "tt0172495" }
+    ],
+    adventure: [
+        { title: "Indiana Jones and the Raiders of the Lost Ark", year: "1981", genre: "Adventure", imdbID: "tt0082971" },
+        { title: "Jurassic Park", year: "1993", genre: "Adventure", imdbID: "tt0107290" },
+        { title: "The Lord of the Rings: The Fellowship of the Ring", year: "2001", genre: "Adventure", imdbID: "tt0120737" }
+    ],
+    comedy: [
+        { title: "Superbad", year: "2007", genre: "Comedy", imdbID: "tt0829482" },
+        { title: "The Hangover", year: "2009", genre: "Comedy", imdbID: "tt1119646" },
+        { title: "Bridesmaids", year: "2011", genre: "Comedy", imdbID: "tt1478338" }
+    ],
+    drama: [
+        { title: "The Shawshank Redemption", year: "1994", genre: "Drama", imdbID: "tt0111161" },
+        { title: "Forrest Gump", year: "1994", genre: "Drama", imdbID: "tt0109830" },
+        { title: "The Godfather", year: "1972", genre: "Drama", imdbID: "tt0068646" }
+    ],
+    'sci-fi': [
+        { title: "Inception", year: "2010", genre: "Sci-Fi", imdbID: "tt1375666" },
+        { title: "The Matrix", year: "1999", genre: "Sci-Fi", imdbID: "tt0133093" },
+        { title: "Interstellar", year: "2014", genre: "Sci-Fi", imdbID: "tt0816692" }
+    ],
+    horror: [
+        { title: "The Conjuring", year: "2013", genre: "Horror", imdbID: "tt1457767" },
+        { title: "Get Out", year: "2017", genre: "Horror", imdbID: "tt5052448" },
+        { title: "A Quiet Place", year: "2018", genre: "Horror", imdbID: "tt6644200" }
+    ],
+    romance: [
+        { title: "Titanic", year: "1997", genre: "Romance", imdbID: "tt0120338" },
+        { title: "The Notebook", year: "2004", genre: "Romance", imdbID: "tt0332280" },
+        { title: "La La Land", year: "2016", genre: "Romance", imdbID: "tt3783958" }
+    ],
+    thriller: [
+        { title: "Se7en", year: "1995", genre: "Thriller", imdbID: "tt0114369" },
+        { title: "Gone Girl", year: "2014", genre: "Thriller", imdbID: "tt2267998" },
+        { title: "Prisoners", year: "2013", genre: "Thriller", imdbID: "tt1392214" }
+    ],
+    crime: [
+        { title: "Pulp Fiction", year: "1994", genre: "Crime", imdbID: "tt0110912" },
+        { title: "The Godfather", year: "1972", genre: "Crime", imdbID: "tt0068646" },
+        { title: "Goodfellas", year: "1990", genre: "Crime", imdbID: "tt0099685" }
+    ],
+    all: [
+        { title: "The Dark Knight", year: "2008", genre: "Action", imdbID: "tt0468569" },
+        { title: "Inception", year: "2010", genre: "Sci-Fi", imdbID: "tt1375666" },
+        { title: "The Shawshank Redemption", year: "1994", genre: "Drama", imdbID: "tt0111161" },
+        { title: "Pulp Fiction", year: "1994", genre: "Crime", imdbID: "tt0110912" },
+        { title: "Forrest Gump", year: "1994", genre: "Drama", imdbID: "tt0109830" },
+        { title: "The Matrix", year: "1999", genre: "Sci-Fi", imdbID: "tt0133093" },
+        { title: "Interstellar", year: "2014", genre: "Sci-Fi", imdbID: "tt0816692" },
+        { title: "Titanic", year: "1997", genre: "Romance", imdbID: "tt0120338" }
+    ]
+};
+
+// Cache untuk poster yang sudah di-load
+const posterCache = {};
+
+// ============================================
+// FUNGSI GLOBAL
+// ============================================
+
+window.watchTrailer = function (movieTitle) {
+    const searchQuery = `${movieTitle} official trailer`;
+    const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(searchQuery)}`;
+    window.open(youtubeUrl, '_blank');
+};
+
 function formatVotes(votes) {
     if (!votes || votes === 'N/A') return 'N/A';
     return votes;
-}
-
-/**
- * Tampilkan loading state
- */
-function showLoading() {
+} function showLoading() {
     movieContainer.innerHTML = `
     <div class="loading">
       <div class="spinner"></div>
       <p>Searching for movies...</p>
     </div>
   `;
-}
-
-/**
- * Tampilkan pesan "Movie not found"
- */
-function showNotFound() {
+} function showNotFound() {
     movieContainer.innerHTML = `
     <div class="not-found">
-      <div class="movie-icon">🙁</div>
-      <p>Movie not found</p>
-      <p style="font-size: 0.75rem;">Try searching for: Avatar, Inception, Interstellar</p>
+      <div class="movie-icon">❓</div>
+      <p>MOVIE NOT FOUND</p>
+      <p style="font-size: 0.75rem;">Try searching for: Avatar, Inception, Interstellar, The Dark Knight</p>
     </div>
   `;
-}
-
-/**
- * Tampilkan detail movie dengan rating di dalam movie-details (tanpa bintang)
- * @param {Object} movie - Data movie dari API atau mock
- */
-function displayMovie(movie) {
-    // Parse genres (bisa berupa string dengan koma atau array)
+} function displayMovie(movie) {
     let genres = [];
     if (movie.Genre) {
-        if (Array.isArray(movie.Genre)) {
-            genres = movie.Genre;
-        } else {
-            genres = movie.Genre.split(',').map(g => g.trim());
-        }
+        genres = movie.Genre.split(',').map(g => g.trim());
     } else {
         genres = ['Action', 'Adventure', 'Fantasy'];
     }
@@ -132,14 +123,16 @@ function displayMovie(movie) {
     const imdbVotes = movie.imdbVotes || 'N/A';
     const posterUrl = (movie.Poster && movie.Poster !== 'N/A')
         ? movie.Poster
-        : 'https://via.placeholder.com/300x450?text=No+Poster';
+        : 'https://placehold.net/600x800.png?text=No+Poster';
+
+    const safeTitle = movie.Title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
     movieContainer.innerHTML = `
     <div class="movie-card">
       <div class="movie-poster">
         <img src="${posterUrl}" 
              alt="${movie.Title}" 
-             onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
+             onerror="this.src='https://placehold.net/600x800.png?text=No+Poster'" />
       </div>
       <div class="movie-info">
         <h1 class="movie-title">${movie.Title || 'N/A'}</h1>
@@ -165,26 +158,126 @@ function displayMovie(movie) {
             <span class="detail-value">${imdbRating}/10 (${formatVotes(imdbVotes)} votes)</span>
           </div>
         </div>
+        <button class="watch-trailer-btn" onclick="window.watchTrailer('${safeTitle}')">
+          🎬 Watch Trailer on YouTube
+        </button>
       </div>
     </div>
   `;
 }
 
 // ============================================
-// API FUNCTIONS
+// POPULAR MOVIES FUNCTIONS (Dengan Poster Asli)
 // ============================================
 
 /**
- * Search movie menggunakan OMDB API
- * @param {string} query - Judul film yang dicari
+ * Ambil poster dari OMDB API berdasarkan IMDb ID
  */
+async function fetchMoviePoster(imdbID) {
+    if (posterCache[imdbID]) {
+        return posterCache[imdbID];
+    }
+
+    try {
+        // UBAH: panggil API internal, bukan OMDB langsung
+        const response = await fetch(`/api/movie?imdbID=${imdbID}`);
+        const data = await response.json();
+
+        let posterUrl = 'https://via.placeholder.com/300x450/20293A/FFFFFF?text=No+Poster';
+        if (data.Poster && data.Poster !== 'N/A') {
+            posterUrl = data.Poster;
+        }
+
+        posterCache[imdbID] = posterUrl;
+        return posterUrl;
+
+    } catch (error) {
+        console.error('Error fetching poster:', error);
+        return 'https://via.placeholder.com/300x450/20293A/FFFFFF?text=No+Poster';
+    }
+}
+
+/**
+ * Load popular movies dengan poster asli
+ */
+async function loadPopularMovies(genre = 'all') {
+    if (!popularMoviesGrid) return;
+
+    popularMoviesGrid.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading movies...</p></div>';
+
+    const movies = popularMoviesByGenre[genre] || popularMoviesByGenre.all;
+
+    // Load semua poster secara paralel
+    const moviesWithPosters = await Promise.all(
+        movies.map(async (movie) => {
+            const posterUrl = await fetchMoviePoster(movie.imdbID);
+            return { ...movie, posterUrl };
+        })
+    );
+
+    // Tampilkan movies dengan poster
+    popularMoviesGrid.innerHTML = '';
+
+    moviesWithPosters.forEach(movie => {
+        const movieCard = document.createElement('div');
+        movieCard.className = 'popular-movie-card';
+        movieCard.onclick = () => searchMovie(movie.title);
+
+        movieCard.innerHTML = `
+            <img class="popular-movie-poster" src="${movie.posterUrl}" alt="${movie.title}" 
+                 onerror="this.src='https://via.placeholder.com/300x450/20293A/FFFFFF?text=${encodeURIComponent(movie.title)}'">
+            <div class="popular-movie-info">
+                <div class="popular-movie-title">${movie.title}</div>
+                <div class="popular-movie-year">${movie.year}</div>
+                <div class="popular-movie-genre">${movie.genre}</div>
+            </div>
+        `;
+
+        popularMoviesGrid.appendChild(movieCard);
+    });
+}
+
+// ============================================
+// GENRE FILTER FUNCTIONS
+// ============================================
+
+function setupGenreFilters() {
+    if (!genreFilters) return;
+
+    const filters = document.querySelectorAll('.genre-filter');
+    filters.forEach(filter => {
+        filter.addEventListener('click', () => {
+            filters.forEach(f => f.classList.remove('active'));
+            filter.classList.add('active');
+
+            const genre = filter.dataset.genre;
+            currentGenre = genre;
+
+            loadPopularMovies(genre);
+
+            if (searchInput) searchInput.value = '';
+            if (movieContainer) movieContainer.innerHTML = '';
+
+            const popularSection = document.querySelector('.popular-section');
+            if (popularSection) popularSection.classList.remove('hidden');
+        });
+    });
+}
+
+// ============================================
+// SEARCH FUNCTIONS
+// ============================================
+
 async function searchWithAPI(query) {
     try {
-        const response = await fetch(`https://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${encodeURIComponent(query)}`);
+        // UBAH: panggil API internal, bukan OMDB langsung
+        const response = await fetch(`/api/movie?search=${encodeURIComponent(query)}`);
         const data = await response.json();
 
         if (data.Response === 'True') {
             displayMovie(data);
+            const popularSection = document.querySelector('.popular-section');
+            if (popularSection) popularSection.classList.add('hidden');
         } else {
             showNotFound();
         }
@@ -194,33 +287,6 @@ async function searchWithAPI(query) {
     }
 }
 
-/**
- * Search movie menggunakan mock data (demo tanpa API)
- * @param {string} query - Judul film yang dicari
- */
-function searchWithMock(query) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const searchLower = query.toLowerCase();
-            let foundMovie = null;
-
-            // Cari di mock data berdasarkan keyword
-            for (const [key, movie] of Object.entries(MOCK_MOVIES)) {
-                if (searchLower.includes(key) || movie.Title.toLowerCase().includes(searchLower)) {
-                    foundMovie = movie;
-                    break;
-                }
-            }
-
-            resolve(foundMovie);
-        }, 500); // Simulasi delay API
-    });
-}
-
-/**
- * Fungsi utama untuk search movie
- * @param {string} query - Judul film yang dicari
- */
 async function searchMovie(query) {
     if (!query || !query.trim()) {
         showNotFound();
@@ -228,38 +294,40 @@ async function searchMovie(query) {
     }
 
     showLoading();
-
-    // Pilih method berdasarkan ketersediaan API Key
-    if (OMDB_API_KEY && OMDB_API_KEY !== null && OMDB_API_KEY !== '') {
-        await searchWithAPI(query.trim());
-    } else {
-        // Gunakan mock data untuk demo
-        const foundMovie = await searchWithMock(query.trim());
-        if (foundMovie) {
-            displayMovie(foundMovie);
-        } else {
-            showNotFound();
-        }
-    }
+    // UBAH: langsung panggil searchWithAPI, tidak perlu cek API key
+    await searchWithAPI(query.trim());
 }
 
 // ============================================
 // EVENT LISTENERS
 // ============================================
 
-// Event listener untuk tombol Search
-searchButton.addEventListener('click', () => {
-    searchMovie(searchInput.value);
-});
+if (searchButton) {
+    searchButton.addEventListener('click', () => {
+        const query = searchInput.value;
+        if (query.trim()) {
+            searchMovie(query);
+        }
+    });
+}
 
-// Event listener untuk Enter key pada input
-searchInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        searchMovie(searchInput.value);
-    }
-});
+if (searchInput) {
+    searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            const query = searchInput.value;
+            if (query.trim()) {
+                searchMovie(query);
+            }
+        }
+    });
+}
 
-// Load default movie saat halaman pertama kali dibuka
+// ============================================
+// INITIALIZE
+// ============================================
 window.addEventListener('DOMContentLoaded', () => {
-    searchMovie('avatar');
+    console.log("Movie Search App Started");
+    setupGenreFilters();
+    loadPopularMovies('all');
+    searchMovie('inception');
 });

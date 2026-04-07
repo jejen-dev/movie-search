@@ -42,12 +42,41 @@
             </div>
         </div>
 
-        <!-- Movie Card Container -->
+        <!-- Genre Filter Section -->
+        <div class="genre-section">
+            <div class="genre-title">
+                <span>🎬 Most popular movies</span>
+            </div>
+            <div class="genre-filters" id="genreFilters">
+                <button class="genre-filter active" data-genre="all">All Movies</button>
+                <button class="genre-filter" data-genre="action">Action</button>
+                <button class="genre-filter" data-genre="adventure">Adventure</button>
+                <button class="genre-filter" data-genre="comedy">Comedy</button>
+                <button class="genre-filter" data-genre="drama">Drama</button>
+                <button class="genre-filter" data-genre="sci-fi">Sci-Fi</button>
+                <button class="genre-filter" data-genre="horror">Horror</button>
+                <button class="genre-filter" data-genre="romance">Romance</button>
+                <button class="genre-filter" data-genre="thriller">Thriller</button>
+                <button class="genre-filter" data-genre="crime">Crime</button>
+            </div>
+        </div>
+
+        <!-- Popular Movies Section -->
+        <div class="popular-section">
+            <div class="popular-title">
+                <span>Popular Movies</span>
+            </div>
+            <div class="popular-movies-grid" id="popularMoviesGrid">
+                <!-- Popular movies akan dimuat di sini -->
+            </div>
+        </div>
+
+        <!-- Movie Card Container (Hasil Pencarian) -->
         <div id="movieContainer"></div>
 
         <!-- Author Info -->
         <div class="author-info">
-            Coded by <a href="#">stfu</a> | Challenge by
+            Coded by <a href="https://github.com/jejen-dev" target="_blank">JejenDev</a> | Challenge by
             <a href="https://www.devchallenges.io?ref=challenge" target="_blank">devChallenges.io</a>.
         </div>
     </div>
