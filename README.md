@@ -52,17 +52,6 @@ Buka file index.html langsung di browser atau gunakan Live Server.
 
 Catatan: Untuk keamanan, API key tidak boleh disimpan di frontend. Proyek ini menggunakan Vercel Serverless Functions sebagai proxy, jadi saat dijalankan secara lokal tanpa serverless function, pastikan untuk mengganti endpoint API dengan proxy lokal atau langsung menggunakan OMDB API dengan key (hanya untuk development).
 
-📁 Struktur Proyek
-text
-movie-search/
-├── index.html          # Halaman utama aplikasi
-├── script.js           # Logika JavaScript (pencarian, autocomplete, API calls)
-├── style.css           # Styling dan responsive design
-├── api/                # Serverless functions (Vercel)
-│   └── movies.js       # Proxy endpoint untuk menyembunyikan API key
-├── design/             # Aset desain (thumbnail, dll)
-├── thumbnail.jpg       # Thumbnail untuk sosial media
-└── README.md           # Dokumentasi proyek (file ini)
 📚 Apa yang Saya Pelajari
 Selama mengerjakan proyek ini, saya mempelajari beberapa hal penting:
 
