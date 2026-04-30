@@ -1,67 +1,82 @@
-<!-- Please update value in the {}  -->
+# 🎬 Movie Search App
 
-<h1 align="center">Movie Search App | devChallenges</h1>
+Sebuah aplikasi web pencari film real-time yang memungkinkan pengguna mencari informasi film menggunakan **OMDB API**. Dibangun dengan **HTML, CSS, dan JavaScript** murni, serta dilengkapi dengan fitur **autocomplete pencarian**, **filter genre populer**, **detail lengkap film** (sinopsis, rating, cast, dll), dan **trailer otomatis dari YouTube**.
 
-<div align="center">
-   Solution for a challenge <a href="https://devchallenges.io/challenge/movie-search-app" target="_blank">Movie Search App</a> from <a href="http://devchallenges.io" target="_blank">devChallenges.io</a>.
-</div>
+---
 
-<div align="center">
-  <h3>
-    <a href="https://jejen-dev.github.io/movie-search-app">
-      Demo
-    </a>
-    <span> | </span>
-    <a href="https://github.com/jejen-dev/movie-search-app">
-      Solution
-    </a>
-    <span> | </span>
-    <a href="https://devchallenges.io/challenge/movie-search-app">
-      Challenge
-    </a>
-  </h3>
-</div>
+## ✨ Fitur Utama
 
-<!-- TABLE OF CONTENTS -->
+- **🔍 Pencarian Film Real-time** — Cari film berdasarkan judul dengan hasil instan.
+- **📝 Autocomplete** — Saran judul film saat mengetik.
+- **🎭 Filter Genre Populer** — Tampilkan film-film berdasarkan kategori genre favorit.
+- **📄 Detail Lengkap Film** — Sinopsis, rating, cast, tahun rilis, dan informasi lainnya.
+- **▶️ Trailer Otomatis** — Terintegrasi dengan pencarian YouTube untuk menampilkan trailer film.
+- **🔄 Loading State & Error Handling** — Memberikan umpan balik yang baik saat proses loading atau terjadi error.
+- **📱 Responsif** — Tampilan optimal di desktop, tablet, dan mobile.
 
-## Table of Contents
+---
 
-- [Overview](#overview)
-  - [What I learned](#what-i-learned)
-  - [Useful resources](#useful-resources)
-- [Built with](#built-with)
-- [Features](#features)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
+## ⚙️ Teknologi yang Digunakan
 
-<!-- OVERVIEW -->
+- **HTML5, CSS3, JavaScript (Vanilla JS)** — Struktur, gaya, dan fungsionalitas aplikasi.
+- **OMDB API** — Sumber data film real-time (sinopsis, rating, poster, dll).
+- **Vercel Serverless Functions** — Menyembunyikan API key untuk keamanan.
+- **YouTube API (pencarian otomatis)** — Menampilkan trailer film.
 
-## Overview
+---
 
-![screenshot](screenshot.png)
+## 🚀 Cara Menjalankan Proyek
 
-**Movie Search App** adalah aplikasi web yang memungkinkan pengguna mencari informasi film menggunakan OMDB API. Pengguna dapat mencari film berdasarkan judul, melihat detail lengkap film (sinopsis, rating, cast, dll), serta menyaring film berdasarkan genre populer.
+### Prasyarat
+- **Node.js** (jika ingin menjalankan serverless function secara lokal)
+- **OMDB API Key** — Dapatkan di [omdbapi.com/apikey.aspx](https://www.omdbapi.com/apikey.aspx)
 
-**Apa yang telah saya capai dalam proyek ini:**
-- ✅ Integrasi dengan OMDB API untuk mendapatkan data film real-time
-- ✅ Fitur pencarian film dengan autocomplete
-- ✅ Filter genre untuk menampilkan film-film populer berdasarkan kategori
-- ✅ Tampilan responsif yang mendukung desktop, tablet, dan mobile
-- ✅ Fitur trailer yang terintegrasi dengan pencarian YouTube
-- ✅ Loading state dan error handling yang baik
+### Langkah-langkah
 
-### What I learned
+1. **Clone repositori ini**
+   ```bash
+   git clone https://github.com/jejen-dev/movie-search.git
+   cd movie-search
+Buat file environment variables
 
+Buat file .env di root proyek dan isi dengan OMDB API key Anda:
+
+env
+OMDB_API_KEY=your_api_key_here
+Jalankan serverless function secara lokal (opsional)
+
+bash
+npm install -g vercel
+vercel dev
+Buka file index.html langsung di browser atau gunakan Live Server.
+
+Catatan: Untuk keamanan, API key tidak boleh disimpan di frontend. Proyek ini menggunakan Vercel Serverless Functions sebagai proxy, jadi saat dijalankan secara lokal tanpa serverless function, pastikan untuk mengganti endpoint API dengan proxy lokal atau langsung menggunakan OMDB API dengan key (hanya untuk development).
+
+📁 Struktur Proyek
+text
+movie-search/
+├── index.html          # Halaman utama aplikasi
+├── script.js           # Logika JavaScript (pencarian, autocomplete, API calls)
+├── style.css           # Styling dan responsive design
+├── api/                # Serverless functions (Vercel)
+│   └── movies.js       # Proxy endpoint untuk menyembunyikan API key
+├── design/             # Aset desain (thumbnail, dll)
+├── thumbnail.jpg       # Thumbnail untuk sosial media
+└── README.md           # Dokumentasi proyek (file ini)
+📚 Apa yang Saya Pelajari
 Selama mengerjakan proyek ini, saya mempelajari beberapa hal penting:
 
-1. **Async/Await dan Promise Handling**
-   ```javascript
-   async function fetchMoviePoster(imdbID) {
-     try {
-       const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${imdbID}`);
-       const data = await response.json();
-       return data.Poster;
-     } catch (error) {
-       console.error('Error:', error);
-     }
-   }
+Async/Await dan Promise Handling — Mengelola fetch data dari API dengan baik.
+
+Keamanan API Key — Menyembunyikan API key menggunakan serverless functions (Vercel) sehingga tidak terekspos di frontend.
+
+Autocomplete Search — Membuat fitur saran judul film saat user mengetik.
+
+Filter Genre — Menampilkan film-film populer berdasarkan genre.
+
+Integrasi YouTube — Mencari dan menampilkan trailer film secara otomatis.
+
+Error Handling & Loading State — Memberikan pengalaman pengguna yang lebih baik.
+
+📄 Lisensi
+Proyek ini bersifat open-source dan dapat digunakan untuk keperluan belajar maupun pengembangan lebih lanjut.
